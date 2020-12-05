@@ -1,0 +1,28 @@
+### Gale-Shaple stable matching ###
+### We suppose here that the preferences are given as a n*n matrix where each line i corresponds to the preferences of i ###
+### We have chosen to code the men-optimal solution of the stable marriage problem ###
+
+def find_pair(l,p):
+    for j in range(len(l)):
+        if l[j]==p:
+            return j
+
+def gale_shapley(pref_m,pref_w):
+    'pref_m id the preference matrix of the men and pref_w the women's one'
+    n = len(pref_m[0])
+    final_matching = [-1]*n
+    already_asked  = [-1]*n
+    while (-1) in final_matching: # still bachelors
+        m = find_pair(final_matching,-1)
+        w = pref_m[m][already_asked[m]+1]
+        already_asked[m] +=1
+        if w in final_matching:
+            m2 = find_pair(final_matching,w)
+            rank1 = find_pair(pref_w[w],m)
+            rank2 = find_pair(pref_w[w],m2)
+            if rank1 < rank2:
+                final_matching[m]=w
+                final_matching[m2]=-1
+        else:
+            final_matching[m]=w
+    return final_matching
