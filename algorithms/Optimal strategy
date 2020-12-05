@@ -1,0 +1,43 @@
+### This algorithm computes the best man a woman who is optimally cheating can have as well as the modified list she needs to declare ###
+
+def to_the_front(l,p):
+    l2=[p]
+    for j in l:
+        if j!=p:
+            l2.append(j)
+    return l2
+
+def optimal_cheating(pref_m,pref_w,w_cheater):
+    n = len(pref_m[0])
+    pref_w_2=[]
+    for j in pref_w:
+        pref_w_2.append(j.copy())
+    N = [False]*n
+    best,those_who_asked = optimal_partner(pref_m,pref_w,w_cheater)
+    list_pref=[-1]*n
+    current_pref = pref_w[w_cheater].copy()
+    not_exhausted = len(those_who_asked)-1
+    N[best]=True
+    for j in those_who_asked:
+        list_pref[j]=current_pref
+    while not_exhausted > 0:
+        for j in those_who_asked:
+            if not N[j]:
+                print(j)
+                current_pref = to_the_front(list_pref[j],j)
+                print(current_pref)
+                list_pref[j]=current_pref
+                not_exhausted-=1
+                N[j]=True
+                pref_w_2[0]=current_pref
+                _,new_twa = optimal_partner(pref_m,pref_w_2,w_cheater)
+                for k in new_twa:
+                    if not N[k]:
+                        not_exhausted+=1
+                        those_who_asked.append(k)
+                        list_pref[k]=current_pref
+    for j in pref_w[w_cheater]:
+        if N[j]:
+            return j,list_pref[j]
+    
+    
